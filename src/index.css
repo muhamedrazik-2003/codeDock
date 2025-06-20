@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@layer base {
+    body {
+        background-color: black;
+        color: rgb(253, 253, 253);
+        font-family: "Outfit", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    h1,h2 {
+        text-transform: capitalize;
+        font-family: "Inter", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        font-style: italic;
+    }
+}
