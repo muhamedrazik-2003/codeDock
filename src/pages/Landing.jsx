@@ -3,8 +3,18 @@ import ProjectCard from "../components/ProjectCard"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
 
 export default function Landing() {
+  const [logState, setLogState] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setLogState(true);
+    } else {
+      setLogState(false);
+    }
+  })
   const projects = [
     {
       id: 1,
@@ -45,7 +55,7 @@ export default function Landing() {
 
   return (
     <div className="w-full bg-black text-white">
-      <Header/>
+      <Header />
       {/* Hero Section */}
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,9 +77,16 @@ export default function Landing() {
               >
                 View Projects
               </button>
-              <Link to={'/authentication'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 text-lg font-medium rounded-md transition-colors">
-                Get Started
-              </Link>
+              {
+                logState
+                  ? <Link to={'/dashboard'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 text-lg font-medium rounded-md transition-colors">
+                    View Dashboard
+                  </Link>
+                  : <Link to={'/authentication'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 text-lg font-medium rounded-md transition-colors">
+                    Get Started
+                  </Link>
+              }
+
             </div>
           </div>
         </div>
@@ -95,15 +112,21 @@ export default function Landing() {
           </div>
 
           <div className="text-center mt-12">
-            <Link to={'/projects'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
+            {logState
+            ? <Link to={'/projects'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
               View All Projects
             </Link>
+            : <Link to={'/authentication'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
+              View All Projects
+            </Link>
+
+            }
           </div>
         </div>
       </section>
 
       {/* Footer */}
-        <Footer/>
+      <Footer />
     </div>
   )
 }

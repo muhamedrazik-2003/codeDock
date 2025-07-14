@@ -1,10 +1,8 @@
-"use client"
-
 import { useState } from "react"
-import { Link } from "react-router-dom"
 import { CodeBracketIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
-import Header from "../components/Header"
-
+import { loginUser, registerUser } from "../services/allApis"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 const Auth = () => {
   const [isRegistered, setIsRegistered] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -13,22 +11,36 @@ const Auth = () => {
     username: "",
     password: "",
   })
+  const navigate = useNavigate();
 
   const handleUserAuth = () => {
     setIsRegistered(!isRegistered)
   }
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle form submission logic here
-    console.log("Form submitted:", formData)
+    if (isRegistered) {
+      const regResponse = await registerUser(formData);
+      console.log(regResponse);
+      if (regResponse.status === 201) {
+        toast.success('registration Completed');
+        handleUserAuth();
+      } else {
+        toast.error("something went Wrong");
+      }
+    } else {
+      const loginResponse = await loginUser(formData);
+      console.log(loginResponse);
+      if (loginResponse.status === 200) {
+        toast.success('Login Successfull');
+        sessionStorage.setItem("token",loginResponse.data.token)
+        sessionStorage.setItem("username",loginResponse.data.username)
+        navigate('/');
+      } else {
+        toast.error("something went Wrong");
+      }
+    };
+
   }
 
   return (
@@ -59,7 +71,7 @@ const Auth = () => {
                   name="email"
                   id="email"
                   value={formData.email}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="block w-full px-3 py-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition-colors"
                   placeholder="Enter your email"
                   required
@@ -77,7 +89,7 @@ const Auth = () => {
                     name="username"
                     id="username"
                     value={formData.username}
-                    onChange={handleInputChange}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className="block w-full px-3 py-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition-colors"
                     placeholder="Choose a username"
                     required
@@ -95,7 +107,7 @@ const Auth = () => {
                   name="password"
                   id="password"
                   value={formData.password}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="block w-full px-3 py-3 pr-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition-colors"
                   placeholder="Enter your password"
                   required

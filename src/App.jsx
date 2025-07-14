@@ -4,6 +4,7 @@ import Landing from './pages/Landing'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/projects' element={<Projects/>}/>
       </Routes>
+      <ToastContainer/>
     </main>
   )
 }
