@@ -21,7 +21,7 @@ const Dashboard = () => {
   return (
     <>
       <Header />
-      <section className="w-full mx-auto bg-[#111] text-gray-200 min-h-screen">
+      <section className="w-full mx-auto bg-[#000] text-gray-200 min-h-screen">
         <h2 className="px-6 py-4 text-lg font-semibold border-b border-gray-800">
           Welcome to CodeDock, {user}
         </h2>

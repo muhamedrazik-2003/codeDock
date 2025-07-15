@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     StarIcon,
     ArrowTopRightOnSquareIcon,
@@ -8,11 +8,22 @@ import {
 } from "@heroicons/react/24/outline";
 import { Pen, Trash, Check, X, Code } from "lucide-react";
 import baseUrl from "../services/base_url";
+import { updateProject } from "../services/allApis";
+import { toast } from "react-toastify";
 
-export default function ProjectCard({ project, deleteData, updateData }) {
+export default function ProjectCard({ project, deleteData }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ ...project });
+    const [preview, setPreview] = useState("")
+
+    useEffect(() => {
+        if (editedData.image.type) {
+            setPreview(URL.createObjectURL(editedData.image))
+        } else {
+            setPreview("")
+        }
+    }, [editedData.image.type])
 
     const getStatusStyles = (status) => {
         switch (status) {
@@ -42,13 +53,44 @@ export default function ProjectCard({ project, deleteData, updateData }) {
         }
     };
 
-    const handleUpdate = () => {
-        console.log(editedData)
-        setIsEditing(false);
-    };
+    const handleUpdate = async (id, data) => {
+        const { title, description, languages, githubrepository, livelink, image } = editedData
+        if (!title || !description || !languages || !githubrepository || !livelink || !image) {
+            toast.warning("Enter All Values")
+        } else {
+            if (image.type) {
+                const header = {
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": `Token ${sessionStorage.getItem('token')}`
+                }
+                const response = await updateProject(id, data, header);
+                if (response.status === 200) {
+                    toast.success("Project Updated Successfully")
+                    setPreview("")
+                    closeModal()
+                } else {
+                    toast.error("Project updating Failed")
+                }
+            } else {
+                const header = {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${sessionStorage.getItem('token')}`
+                }
+                const response = await updateProject(id, data, header);
+                if (response.status === 200) {
+                    toast.success("Project Updated Successfully")
+                    setPreview("")
+                    closeModal()
+                } else {
+                    toast.error("Project updating Failed")
+                }
+            }
+        }
+    }
 
     return (
         <>
+            {/* card  */}
             <div
                 className="bg-gray-900 border border-gray-800 rounded-lg hover:border-gray-700 transition-all duration-300 group overflow-hidden cursor-pointer"
                 onClick={openModal}
@@ -122,15 +164,6 @@ export default function ProjectCard({ project, deleteData, updateData }) {
                     onClick={handleBackdropClick}
                 >
                     <div className="relative bg-gray-900 border border-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8">
-                        {/* Image */}
-                        <img
-                            src={
-                                project.image
-                                    ? `${baseUrl}/images/${project.image}`
-                                    : "/placeholder.svg"
-                            }
-                            className="w-full h-64 sm:h-80 object-cover mb-6 rounded-2xl"
-                        />
                         <button
                             onClick={closeModal}
                             className="absolute border border-slate-600 top-4 right-4 p-2 bg-gray-900 bg-opacity-70 hover:bg-opacity-100 rounded-full text-gray-400 hover:text-white transition"
@@ -140,6 +173,22 @@ export default function ProjectCard({ project, deleteData, updateData }) {
                         {/* Editable Fields */}
                         {isEditing ? (
                             <>
+                                <label htmlFor="image" className="cursor-pointer block">
+                                    <input
+                                        type="file"
+                                        id="image"
+                                        name="image"
+                                        className="hidden"
+                                        onChange={(e) => setEditedData({ ...editedData, image: e.target.files[0] })}
+                                    />
+                                    <img
+                                        src={
+                                            preview ? preview : `${baseUrl}/images/${project.image}`
+                                        }
+                                        alt="preview"
+                                        className="w-full h-64 sm:h-80 object-cover rounded-t-lg"
+                                    />
+                                </label>
                                 <input
                                     value={editedData.title}
                                     onChange={(e) =>
@@ -198,7 +247,7 @@ export default function ProjectCard({ project, deleteData, updateData }) {
                                             Cancel
                                         </button>
                                         <button
-                                            onClick={handleUpdate}
+                                            onClick={() => handleUpdate(editedData._id, editedData)}
                                             className="flex items-center justify-center border border-green-600 text-green-400 hover:bg-green-800 px-6 py-3 font-medium rounded-md transition-colors"
                                         >
                                             <Check className="h-4 w-4 mr-2" />
@@ -210,6 +259,15 @@ export default function ProjectCard({ project, deleteData, updateData }) {
                         ) : (
                             <>
                                 {/* View Mode */}
+
+                                <img
+                                    src={
+                                        project?.image ? `${baseUrl}/images/${project.image}` : "/placeholder.svg"
+                                    }
+                                    alt={project.title}
+                                    className="w-full h-64 sm:h-80 object-cover rounded-t-lg"
+                                />
+
                                 <h2 className="text-3xl font-bold text-white mb-2">
                                     {project.title}
                                 </h2>

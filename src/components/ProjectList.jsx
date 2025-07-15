@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ProjectCard from './ProjectCard'
-import { deleteProject, updateProject, userProject } from '../services/allApis'
+import { deleteProject, userProject } from '../services/allApis'
 // import { toast } from 'react-toastify'
 
 function ProjectList({ dataRefresh }) {
@@ -19,20 +19,6 @@ function ProjectList({ dataRefresh }) {
 
             if (response.status === 200) {
                 setProjects(response.data)
-            }
-        } catch (error) {
-            console.error("BAckend Api Error", error)
-        }
-
-    }
-    const updateData = async (id, data, header) => {
-        try {
-            const response = await updateProject(id, data, header);
-            console.log(response)
-
-            if (response.status === 200) {
-                setProjects(response.data)
-
             }
         } catch (error) {
             console.error("BAckend Api Error", error)
@@ -61,7 +47,6 @@ function ProjectList({ dataRefresh }) {
                             key={project._id}
                             project={project}
                             deleteData={deleteData}
-                            updateData={updateData}
                         />
                     ))}
                 </div>
