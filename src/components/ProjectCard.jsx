@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
     StarIcon,
     ArrowTopRightOnSquareIcon,
@@ -10,12 +10,14 @@ import { Pen, Trash, Check, X, Code } from "lucide-react";
 import baseUrl from "../services/base_url";
 import { updateProject } from "../services/allApis";
 import { toast } from "react-toastify";
+import { dataRefreshContext } from "../ContextApi/Context";
 
 export default function ProjectCard({ project, deleteData }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ ...project });
     const [preview, setPreview] = useState("")
+    const {setDataRefresh} = useContext(dataRefreshContext);
 
     useEffect(() => {
         if (editedData.image.type) {
@@ -68,6 +70,7 @@ export default function ProjectCard({ project, deleteData }) {
                     toast.success("Project Updated Successfully")
                     setPreview("")
                     closeModal()
+                    setDataRefresh(response);
                 } else {
                     toast.error("Project updating Failed")
                 }
@@ -81,6 +84,7 @@ export default function ProjectCard({ project, deleteData }) {
                     toast.success("Project Updated Successfully")
                     setPreview("")
                     closeModal()
+                    setDataRefresh(response);
                 } else {
                     toast.error("Project updating Failed")
                 }

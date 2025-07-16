@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react'
 import ProjectCard from './ProjectCard'
 import { deleteProject, userProject } from '../services/allApis'
-import { addResponseContext } from '../ContextApi/Context'
+import { dataRefreshContext } from '../ContextApi/Context'
 
 
 function ProjectList() {
     const [projects, setProjects] = useState([])
-  const { addResponse } = useContext(addResponseContext);
+  const {dataRefresh } = useContext(dataRefreshContext);
 
     useEffect(() => {
         if (sessionStorage.getItem("username")) {
             getData()
         }
-    }, [addResponse])
+    }, [dataRefresh])
 
     const getData = async () => {
         try {

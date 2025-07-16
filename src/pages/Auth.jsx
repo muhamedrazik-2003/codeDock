@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { CodeBracketIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
 import { loginUser, registerUser } from "../services/allApis"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import { authContext } from "../ContextApi/Context"
 const Auth = () => {
   const [isRegistered, setIsRegistered] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -12,6 +13,7 @@ const Auth = () => {
     password: "",
   })
   const navigate = useNavigate();
+  const {setAuthStatus} = useContext(authContext);
 
   const handleUserAuth = () => {
     setIsRegistered(!isRegistered)
@@ -33,6 +35,7 @@ const Auth = () => {
       console.log(loginResponse);
       if (loginResponse.status === 200) {
         toast.success('Login Successfull');
+        setAuthStatus(true);
         sessionStorage.setItem("token",loginResponse.data.token)
         sessionStorage.setItem("username",loginResponse.data.username)
         navigate('/');

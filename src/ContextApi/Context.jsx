@@ -1,15 +1,19 @@
-import React, {useState, createContext} from 'react'
+import React, { useState, createContext } from 'react'
 
-export const addResponseContext = createContext();
+export const dataRefreshContext = createContext();
+export const authContext = createContext();
 
 
-function Context({children}) {
-    const [addResponse, setAddResponse] = useState("")
+function Context({ children }) {
+    const [dataRefresh, setDataRefresh] = useState("")
+    const [authStatus, setAuthStatus] = useState(false)
 
-  return (
-    <addResponseContext.Provider value={{addResponse, setAddResponse}}>
-        {children}
-    </addResponseContext.Provider>
-  )
+    return (
+        <authContext.Provider value={{authStatus, setAuthStatus}}>
+            <dataRefreshContext.Provider value={{ dataRefresh, setDataRefresh }}>
+                {children}
+            </dataRefreshContext.Provider>
+        </authContext.Provider>
+    )
 };
 export default Context;
