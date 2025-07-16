@@ -7,29 +7,28 @@ import ProjectList from '../components/ProjectList'
 
 const Dashboard = () => {
   const [user, setUser] = useState("")
-  const [dataRefresh, setDataRefresh] = useState(false);
-
   const [profileShow, setProfileShow] = useState(true)
+
 
   useEffect(() => {
     if (sessionStorage.getItem("username")) {
       setUser(sessionStorage.getItem("username"))
     }
-  }, [dataRefresh])
+  }, [])
 
 
   return (
     <>
       <Header />
-      <section className="w-full mx-auto bg-[#000] text-gray-200 min-h-screen">
+      <section className="w-full mx-auto bg-[#000] text-gray-200 min-h-100vh">
         <h2 className="px-6 py-4 text-lg font-semibold border-b border-gray-800">
           Welcome to CodeDock, {user}
         </h2>
 
         <div className="grid grid-cols-[1fr_auto] px-6 gap-6">
-          <div className="space-y-4 pt-4">
-            <AddProject setDataRefresh={setDataRefresh} />
-            <ProjectList dataRefresh={dataRefresh} />
+          <div className="space-y-4 pt-4 pb-20">
+            <AddProject />
+            <ProjectList />
           </div>
 
           <div

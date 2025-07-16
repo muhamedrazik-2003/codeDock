@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { X, PlusCircle } from "lucide-react"
 import { toast } from "react-toastify"
 import { addProject } from "../services/allApis"
+import { addResponseContext } from "../ContextApi/Context"
 
-export const AddProject = ({ setDataRefresh }) => {
+export const AddProject = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [projectData, setProjectData] = useState({
         title: "", description: "", languages: "", githubrepository: "", livelink: "", image: ""
     })
     const [preview, setPreview] = useState("")
-
+    
+    const {setAddResponse} = useContext(addResponseContext);
     useEffect(() => {
         if (projectData.image) {
             setPreview(URL.createObjectURL(projectData.image))
@@ -42,7 +44,7 @@ export const AddProject = ({ setDataRefresh }) => {
                 title: "", description: "", languages: "", githubrepository: "", livelink: "", image: ""
             })
             setPreview("")
-            setDataRefresh(prev => !prev)
+            setAddResponse(response);
         } else {
             toast.error("Project Adding Failed")
         }
