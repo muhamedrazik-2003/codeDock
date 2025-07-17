@@ -35,3 +35,6 @@ export const deleteProject = async(id) => {
 export const updateProject = async(id, data, header) => {
    return await commonApi(`${baseUrl}/updateproject/${id}`, "PUT", header, data);
 }
+export const updateUserProfile = async(data, header) => {
+   return await commonApi(`${baseUrl}/updateuser`, "PUT", header, data);
+}

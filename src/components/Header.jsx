@@ -32,7 +32,7 @@ const Header = () => {
             {
               authStatus
               && <button onClick={handleLogout} className="text-red-500 hover:text-red-800 transition-colors py-1.5 px-3 border border-red-500 rounded-3xl">
-                  Logout
+                  -Logout
                 </button>
             }
 
