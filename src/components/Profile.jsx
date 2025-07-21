@@ -3,6 +3,7 @@ import { UserCircleIcon, ChevronDoubleRightIcon, ChevronDoubleLeftIcon } from '@
 import { Pen } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { updateUserProfile } from '../services/allApis';
+import baseUrl from '../services/base_url';
 
 
 export const Profile = () => {
@@ -13,22 +14,21 @@ export const Profile = () => {
   })
   const [preview, setPreview] = useState("")
 
-useEffect(() => {
-  if(sessionStorage.getItem('user')) {
-    setUpdatedProfile(sessionStorage.getItem("user"))
-  }
-},[])
+  useEffect(() => {
+    if (sessionStorage.getItem('user')) {
+      setUpdatedProfile(JSON.parse(sessionStorage.getItem("user")))
+    }
+  }, [])
 
   useEffect(() => {
-    if (updatedProfile.profile.type) {
+    if (updatedProfile.profile?.type) {
       setPreview(URL.createObjectURL(updatedProfile.profile))
     } else {
       setPreview("")
     }
-  }, [updatedProfile.profile.type])
+  }, [updatedProfile.profile])
 
   const handleProfileUpdate = async (data) => {
-    // console.log(updatedProfile)
     const { username, github, linkedin, profile } = updatedProfile;
     let header = {};
     if (profile.type) {
@@ -43,9 +43,11 @@ useEffect(() => {
       }
     }
     const response = await updateUserProfile(data, header);
+    // console.log(updatedProfile)
     if (response.status === 200) {
       toast.success("Profile Updated Successfully")
       setPreview("")
+      setIsEditing(false)
       // setDataRefresh(response);
     } else {
       toast.error("Project updating Failed")
@@ -91,7 +93,7 @@ useEffect(() => {
                 : <img
                   className='size-12'
                   src={
-                    preview ? preview : "/placeholder.svg"
+                   updatedProfile?.profile ? `${baseUrl}/images/${updatedProfile.profile}` : "/placeholder.svg"
                   }
                   alt="profile image"
                 />
@@ -112,9 +114,9 @@ useEffect(() => {
                 Name
               </p>
               {isEditing
-                ? <input onChange={(e) => setUpdatedProfile({ ...updatedProfile, username: e.target.value })} className={'p-2 border-1 my-1 rounded-lg'} type="text" name="username" id="username" placeholder='username' />
+                ? <input defaultValue={updatedProfile.username} onChange={(e) => setUpdatedProfile({ ...updatedProfile, username: e.target.value })} className={'p-2 border-1 my-1 rounded-lg'} type="text" name="username" id="username" placeholder='username' />
                 : <p className="text-lg font-medium text-gray-200 italic">
-                  Jhon Doe
+                  {updatedProfile.username}
                 </p>
               }
 
@@ -126,14 +128,14 @@ useEffect(() => {
                 GitHub
               </p>
               {isEditing
-                ? <input onChange={(e) => setUpdatedProfile({ ...updatedProfile, github: e.target.value })} className={'p-2 border-1 my-1 rounded-lg'} type="text" name="github" id="github" placeholder='github Repo' />
+                ? <input defaultValue={updatedProfile.github} onChange={(e) => setUpdatedProfile({ ...updatedProfile, github: e.target.value })} className={'p-2 border-1 my-1 rounded-lg'} type="text" name="github" id="github" placeholder='github Repo' />
                 : <a
                   href="https://github.com/johndoe"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-lg font-medium text-violet-400 hover:underline break-words"
                 >
-                  johndoe/github.com
+                  {updatedProfile.github}
                 </a>
               }
 
@@ -145,14 +147,15 @@ useEffect(() => {
                 LinkedIn
               </p>
               {isEditing
-                ? <input onChange={(e) => setUpdatedProfile({ ...updatedProfile, linkedin: e.target.value })} className={'p-2 border-1 my-1 rounded-lg'} type="text" name="linkedin" id="linkedin" placeholder='linkedIn URL' />
+                ? <input defaultValue={updatedProfile.linkedin} onChange={(e) => setUpdatedProfile({ ...updatedProfile, linkedin: e.target.value })} className={'p-2 border-1 my-1 rounded-lg'} type="text" name="linkedin" id="linkedin" placeholder='linkedIn URL' />
                 : <a
                   href="https://linkedin.com/in/johndoe"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-lg font-medium text-violet-400 hover:underline break-words"
                 >
-                  JhonDoe/Linkedin
+                  {updatedProfile.linkedin}
+
                 </a>
               }
 
@@ -160,7 +163,7 @@ useEffect(() => {
           </div>
           {
             isEditing &&
-            <div className='flex justify-end gap-3'>
+            <div className='flex justify-end gap-3 mb-3'>
               <button className='p-1.5 px-3 rounded-3xl bg-red-500 text-white hover:bg-red-800' onClick={() => setIsEditing(false)}>cancel</button>
               <button className='p-1.5 px-3 rounded-3xl bg-green-500 text-white hover:bg-green-800' onClick={() => handleProfileUpdate(updatedProfile)}>update</button>
             </div>

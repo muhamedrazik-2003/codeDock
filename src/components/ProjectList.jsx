@@ -6,10 +6,11 @@ import { dataRefreshContext } from '../ContextApi/Context'
 
 function ProjectList() {
     const [projects, setProjects] = useState([])
-  const {dataRefresh } = useContext(dataRefreshContext);
+    const { dataRefresh } = useContext(dataRefreshContext);
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        if (sessionStorage.getItem("username")) {
+        if (sessionStorage.getItem("user")) {
             getData()
         }
     }, [dataRefresh])
@@ -20,10 +21,11 @@ function ProjectList() {
             console.log(response)
 
             if (response.status === 200) {
+                setIsLoading(false)
                 setProjects(response.data)
             }
         } catch (error) {
-            console.error("BAckend Api Error", error)
+            console.error("Backend Api Error", error)
         }
 
     }
@@ -42,14 +44,18 @@ function ProjectList() {
         <section className="w-full">
             <h2 className="text-xl font-semibold text-white mb-4 px-4">Your Projects</h2>
 
-            {projects.length > 0 ? (
+            {projects?.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
                     {projects.map((project) => (
-                        <ProjectCard
-                            key={project._id}
-                            project={project}
-                            deleteData={deleteData}
-                        />
+                        isLoading
+                            ? <h1>Loading Projects</h1>
+                            : <ProjectCard
+                                key={project._id}
+                                project={project}
+                                deleteData={deleteData}
+                            />
+
+
                     ))}
                 </div>
             ) : (
