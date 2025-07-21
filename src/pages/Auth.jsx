@@ -37,7 +37,7 @@ const Auth = () => {
         toast.success('Login Successfull');
         setAuthStatus(true);
         sessionStorage.setItem("token",loginResponse.data.token)
-        sessionStorage.setItem("username",loginResponse.data.username)
+        sessionStorage.setItem("user",loginResponse.data.existingUser)
         navigate('/');
       } else {
         toast.error("something went Wrong");

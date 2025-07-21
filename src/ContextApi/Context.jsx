@@ -6,7 +6,7 @@ export const authContext = createContext();
 
 function Context({ children }) {
     const [dataRefresh, setDataRefresh] = useState("")
-    const [authStatus, setAuthStatus] = useState(false)
+    const [authStatus, setAuthStatus] = useState(true)
 
     return (
         <authContext.Provider value={{authStatus, setAuthStatus}}>

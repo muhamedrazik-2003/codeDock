@@ -4,50 +4,34 @@ import Header from "../components/Header"
 import Footer from "../components/Footer"
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { getAllProjects } from "../services/allApis"
 
 export default function Landing() {
   const [logState, setLogState] = useState(false);
+  const [sampleProjects, setSampleProjects] = useState([])
 
   useEffect(() => {
+    getProjectData()
     if (sessionStorage.getItem("token")) {
       setLogState(true);
     } else {
       setLogState(false);
     }
   })
-  const projects = [
-    {
-      id: 1,
-      title: "E-Commerce Platform",
-      description: "A full-stack e-commerce solution built with React and Stripe integration for seamless payments.",
-      technologies: ["React", "TypeScript", "Stripe", "Tailwind CSS"],
-      githubUrl: "#",
-      liveUrl: "#",
-      status: "Active",
-      image: "https://via.placeholder.com/400x200/374151/9CA3AF?text=E-Commerce+Platform",
-    },
-    {
-      id: 2,
-      title: "Task Management App",
-      description:
-        "A collaborative task management application with real-time updates and team collaboration features.",
-      technologies: ["React", "Node.js", "Socket.io", "MongoDB"],
-      githubUrl: "#",
-      liveUrl: "#",
-      status: "In Progress",
-      image: "https://via.placeholder.com/400x200/374151/9CA3AF?text=Task+Management+App",
-    },
-    {
-      id: 3,
-      title: "Weather Dashboard",
-      description: "A responsive weather dashboard that provides detailed forecasts and weather analytics.",
-      technologies: ["Vue.js", "Chart.js", "OpenWeather API", "CSS3"],
-      githubUrl: "#",
-      liveUrl: "#",
-      status: "Completed",
-      image: "https://via.placeholder.com/400x200/374151/9CA3AF?text=Weather+Dashboard",
-    },
-  ]
+
+  const getProjectData = async () => {
+    try {
+      const response = await getAllProjects();
+      console.log(response)
+      if (response.status === 200) {
+        setSampleProjects(response.data.slice(0, 3))
+        console.log(sampleProjects)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+  }
 
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
@@ -106,19 +90,19 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
+            {sampleProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
 
           <div className="text-center mt-12">
             {logState
-            ? <Link to={'/projects'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
-              View All Projects
-            </Link>
-            : <Link to={'/authentication'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
-              View All Projects
-            </Link>
+              ? <Link to={'/projects'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
+                View All Projects
+              </Link>
+              : <Link to={'/authentication'} className="border border-gray-600 text-white hover:bg-gray-900 px-8 py-3 font-medium rounded-md transition-colors">
+                View All Projects
+              </Link>
 
             }
           </div>

@@ -13,6 +13,11 @@ export const Profile = () => {
   })
   const [preview, setPreview] = useState("")
 
+useEffect(() => {
+  if(sessionStorage.getItem('user')) {
+    setUpdatedProfile(sessionStorage.getItem("user"))
+  }
+},[])
 
   useEffect(() => {
     if (updatedProfile.profile.type) {

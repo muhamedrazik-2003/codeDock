@@ -2,9 +2,42 @@ import { FolderIcon, MagnifyingGlassIcon, FunnelIcon } from "@heroicons/react/24
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import ProjectCard from "../components/ProjectCard"
+import { getAllProjects } from "../services/allApis"
+import { useEffect, useState } from "react"
 
 export default function Projects() {
+    const [allProjects, setAllProjects] = useState([])
+    const [searchData,setSearchData] = useState([]);
 
+    useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+        getProjectData()
+    }
+    },[])
+
+const handleSearch = (value) => {
+    let keyword = ""
+    allProjects.forEach(project => keyword = project.title + project.languages)
+    console.log(keyword)
+    const newProjectData = searchData.filter(project => project.languages.toLowerCase().includes(value.toLowerCase()))
+    console.log(newProjectData)
+    setAllProjects(newProjectData)
+}
+
+    const getProjectData = async () => {
+        try {
+            const response = await getAllProjects();
+            console.log(response)
+            if (response.status === 200) {
+                setAllProjects(response.data)
+                setSearchData(response.data)
+                console.log(allProjects)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+
+    }
     return (
         <div className="w-full bg-black text-white">
             <Header />
@@ -26,7 +59,7 @@ export default function Projects() {
                         <input
                             type="text"
                             placeholder="Search projects, technologies..."
-                            value=''
+                            onChange={(e) => handleSearch(e.target.value)}
                             className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent"
                         />
                     </div>
@@ -34,12 +67,10 @@ export default function Projects() {
             </section>
 
             {/* Projects Grid */}
-            <section className="p-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <ProjectCard />
-                    <ProjectCard />
-                    <ProjectCard />
-                </div>
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-[8rem]">
+               {allProjects.map((project) => (
+                             <ProjectCard key={project.id} project={project} />
+                           ))}
             </section>
 
             <Footer />

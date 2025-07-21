@@ -11,13 +11,16 @@ import baseUrl from "../services/base_url";
 import { updateProject } from "../services/allApis";
 import { toast } from "react-toastify";
 import { dataRefreshContext } from "../ContextApi/Context";
+import { authContext } from "../ContextApi/Context";
 
 export default function ProjectCard({ project, deleteData }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ ...project });
     const [preview, setPreview] = useState("")
-    const {setDataRefresh} = useContext(dataRefreshContext);
+    const { setDataRefresh } = useContext(dataRefreshContext);
+    const { authStatus } = useContext(authContext);
+
 
     useEffect(() => {
         if (editedData.image.type) {
@@ -237,6 +240,7 @@ export default function ProjectCard({ project, deleteData }) {
                                 />
 
                                 {/* Buttons */}
+
                                 <div className="flex justify-end flex-wrap gap-4">
 
                                     <div className="flex gap-4">
@@ -259,6 +263,8 @@ export default function ProjectCard({ project, deleteData }) {
                                         </button>
                                     </div>
                                 </div>
+
+
                             </>
                         ) : (
                             <>
@@ -311,25 +317,28 @@ export default function ProjectCard({ project, deleteData }) {
                                         </a>
                                     </div>
 
-                                    <div className="flex gap-4">
-                                        <button
-                                            onClick={() => setIsEditing(true)}
-                                            className="flex items-center justify-center border border-blue-600 text-blue-400 hover:bg-blue-800 px-6 py-3 font-medium rounded-md transition-colors"
-                                        >
-                                            <Pen className="h-4 w-4 mr-2" />
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                deleteData(project._id)
-                                                closeModal()
-                                            }}
-                                            className="flex items-center justify-center border border-red-600 text-red-400 hover:bg-red-800 px-6 py-3 font-medium rounded-md transition-colors"
-                                        >
-                                            <Trash className="h-4 w-4 mr-2" />
-                                            Delete
-                                        </button>
-                                    </div>
+                                    {authStatus &&
+                                        <div className="flex gap-4">
+                                            <button
+                                                onClick={() => setIsEditing(true)}
+                                                className="flex items-center justify-center border border-blue-600 text-blue-400 hover:bg-blue-800 px-6 py-3 font-medium rounded-md transition-colors"
+                                            >
+                                                <Pen className="h-4 w-4 mr-2" />
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    deleteData(project._id)
+                                                    closeModal()
+                                                }}
+                                                className="flex items-center justify-center border border-red-600 text-red-400 hover:bg-red-800 px-6 py-3 font-medium rounded-md transition-colors"
+                                            >
+                                                <Trash className="h-4 w-4 mr-2" />
+                                                Delete
+                                            </button>
+                                        </div>
+                                    }
+
                                 </div>
                             </>
                         )}
