@@ -13,14 +13,18 @@ import { toast } from "react-toastify";
 import { dataRefreshContext } from "../ContextApi/Context";
 import { authContext } from "../ContextApi/Context";
 
-export default function ProjectCard({ project , setReload}) {
+export default function ProjectCard({ project, setReload }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ ...project });
     const [preview, setPreview] = useState("")
     const { setDataRefresh } = useContext(dataRefreshContext);
     const { authStatus } = useContext(authContext);
+    const currentUser = JSON.parse(sessionStorage.getItem('user'))
+    console.log(sessionStorage.getItem('user'));
 
+    console.log("current user",currentUser);
+    // console.log(currentUser?._id === project?.userId);
 
     useEffect(() => {
         if (editedData.image.type) {
@@ -256,29 +260,26 @@ export default function ProjectCard({ project , setReload}) {
                                 {/* Buttons */}
 
                                 <div className="flex justify-end flex-wrap gap-4">
-
-                                    <div className="flex gap-4">
-                                        <button
-                                            onClick={() => {
-                                                setEditedData({ ...project });
-                                                setIsEditing(false);
-                                            }}
-                                            className="flex items-center justify-center bg-gray-700 hover:bg-gray-600 px-6 py-3 font-medium rounded-md text-white"
-                                        >
-                                            <X className="h-4 w-4 mr-2" />
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={() => handleUpdate(editedData._id, editedData)}
-                                            className="flex items-center justify-center border border-green-600 text-green-400 hover:bg-green-800 px-6 py-3 font-medium rounded-md transition-colors"
-                                        >
-                                            <Check className="h-4 w-4 mr-2" />
-                                            Update
-                                        </button>
-                                    </div>
+                                        <div className="flex gap-4">
+                                            <button
+                                                onClick={() => {
+                                                    setEditedData({ ...project });
+                                                    setIsEditing(false);
+                                                }}
+                                                className="flex items-center justify-center bg-gray-700 hover:bg-gray-600 px-6 py-3 font-medium rounded-md text-white"
+                                            >
+                                                <X className="h-4 w-4 mr-2" />
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={() => handleUpdate(editedData._id, editedData)}
+                                                className="flex items-center justify-center border border-green-600 text-green-400 hover:bg-green-800 px-6 py-3 font-medium rounded-md transition-colors"
+                                            >
+                                                <Check className="h-4 w-4 mr-2" />
+                                                Update
+                                            </button>
+                                        </div>
                                 </div>
-
-
                             </>
                         ) : (
                             <>
@@ -331,7 +332,7 @@ export default function ProjectCard({ project , setReload}) {
                                         </a>
                                     </div>
 
-                                    {authStatus &&
+                                    {authStatus && currentUser._id === project.userId &&
                                         <div className="flex gap-4">
                                             <button
                                                 onClick={() => setIsEditing(true)}
