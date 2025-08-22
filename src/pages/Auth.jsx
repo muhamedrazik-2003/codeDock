@@ -7,6 +7,8 @@ import { authContext } from "../ContextApi/Context"
 const Auth = () => {
   const [isRegistered, setIsRegistered] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading,setIsLoading] = useState(false)
+
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -20,15 +22,19 @@ const Auth = () => {
   }
 
   const handleSubmit = async (e) => {
+    setIsLoading(true)
     e.preventDefault()
-    if (isRegistered) {
+    try {
+      if (isRegistered) {
       const regResponse = await registerUser(formData);
       console.log(regResponse);
       if (regResponse.status === 201) {
         toast.success('registration Completed');
         handleUserAuth();
+        setIsLoading(false)
       } else {
         toast.error("something went Wrong");
+        setIsLoading(false)
       }
     } else {
       const loginResponse = await loginUser(formData);
@@ -39,10 +45,18 @@ const Auth = () => {
         sessionStorage.setItem("token",loginResponse.data.token)
         sessionStorage.setItem("user",JSON.stringify(loginResponse.data.existingUser))
         navigate('/');
+        setIsLoading(false)
       } else {
         toast.error("something went Wrong");
+        setIsLoading(false)
       }
     };
+    } catch (err) {
+      console.log(err)
+        toast.error("Login Failed, Please check your email and password");
+        setIsLoading(false)
+    }
+    
 
   }
 
@@ -128,9 +142,14 @@ const Auth = () => {
               </div>
               <button
                 type="submit"
+                disabled={isLoading}
                 className="w-full bg-blue-700 text-black hover:bg-blue-500 px-6 py-3 text-lg font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
-                {isRegistered ? "Create Account" : "Sign In"}
+                {
+                  isLoading 
+                  ? "Please Wait..."
+                  : isRegistered ? "Create Account" : "Sign In"
+                }
               </button>
             </form>
 

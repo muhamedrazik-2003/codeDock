@@ -7,22 +7,24 @@ import { useEffect, useState } from "react"
 
 export default function Projects() {
     const [allProjects, setAllProjects] = useState([])
-    const [searchData,setSearchData] = useState([]);
-
+    const [searchData, setSearchData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [reload,setReload] = useState(false)
     useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-        getProjectData()
-    }
-    },[])
+        if (sessionStorage.getItem("token")) {
+            getProjectData()
+        }
+    }, [reload])
 
-const handleSearch = (value) => {
-    let keyword = ""
-    allProjects.forEach(project => keyword = project.title + project.languages)
-    console.log(keyword)
-    const newProjectData = searchData.filter(project => project.languages.toLowerCase().includes(value.toLowerCase()))
-    console.log(newProjectData)
-    setAllProjects(newProjectData)
-}
+    const handleSearch = (value) => {
+        const newProjectData = searchData.filter(project => {
+            const keyword = (project.title + " " + project.languages).toLowerCase();
+            return keyword.includes(value.toLowerCase());
+        });
+
+        console.log(newProjectData)
+        setAllProjects(newProjectData)
+    }
 
     const getProjectData = async () => {
         try {
@@ -32,9 +34,11 @@ const handleSearch = (value) => {
                 setAllProjects(response.data)
                 setSearchData(response.data)
                 console.log(allProjects)
+                setIsLoading(false)
             }
         } catch (error) {
             console.error(error)
+            setIsLoading(false)
         }
 
     }
@@ -68,9 +72,15 @@ const handleSearch = (value) => {
 
             {/* Projects Grid */}
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-[8rem]">
-               {allProjects.map((project) => (
-                             <ProjectCard key={project.id} project={project} />
-                           ))}
+                {
+                    isLoading ?
+                        <h1 className="my-6  text-center col-span-3 text-xl ">Loading Projects...</h1>
+                        : allProjects.length > 0
+                            ? allProjects.map((project) => (
+                                <ProjectCard key={project.id} project={project} setReload={setReload} />
+                            ))
+                            : <h1 className="my-6  text-center col-span-3 text-xl">Currently No Projects Found!.</h1>
+                }
             </section>
 
             <Footer />

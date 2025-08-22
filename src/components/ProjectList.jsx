@@ -38,7 +38,6 @@ function ProjectList() {
         } catch (error) {
             console.error("BAckend Api Error", error)
         }
-
     }
     return (
         <section className="w-full">

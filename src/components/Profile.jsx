@@ -21,7 +21,7 @@ export const Profile = () => {
   }, [])
 
   useEffect(() => {
-    if (updatedProfile.profile?.type) {
+    if (updatedProfile.profile.type) {
       setPreview(URL.createObjectURL(updatedProfile.profile))
     } else {
       setPreview("")
@@ -34,12 +34,12 @@ export const Profile = () => {
     if (profile.type) {
       header = {
         "Content-Type": "multipart/form-data",
-        "Authorization": `Token ${sessionStorage.getItem('token')}`
+        "Authorization": `token ${sessionStorage.getItem('token')}`
       }
     } else {
       header = {
         "Content-Type": "application/json",
-        "Authorization": `Token ${sessionStorage.getItem('token')}`
+        "Authorization": `token ${sessionStorage.getItem('token')}`
       }
     }
     const response = await updateUserProfile(data, header);
@@ -86,14 +86,14 @@ export const Profile = () => {
                     className='size-8'
 
                     src={
-                      preview ? preview : "/placeholder.svg"
+                      preview ? preview : `${baseUrl}/images/${updatedProfile.profile}`
                     }
                     alt="profile image" />
                 </label>
                 : <img
                   className='size-12'
                   src={
-                   updatedProfile?.profile ? `${baseUrl}/images/${updatedProfile.profile}` : "/placeholder.svg"
+                    updatedProfile?.profile ? `${baseUrl}/images/${updatedProfile.profile}` : "/placeholder.svg"
                   }
                   alt="profile image"
                 />

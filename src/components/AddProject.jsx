@@ -59,7 +59,6 @@ export const AddProject = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                     <div className="bg-gray-950 border border-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                        {/* Image Section */}
                         <div className="relative">
                             <label htmlFor="image" className="cursor-pointer block">
                                 <input

@@ -8,12 +8,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { Pen, Trash, Check, X, Code } from "lucide-react";
 import baseUrl from "../services/base_url";
-import { updateProject } from "../services/allApis";
+import { deleteProject, updateProject } from "../services/allApis";
 import { toast } from "react-toastify";
 import { dataRefreshContext } from "../ContextApi/Context";
 import { authContext } from "../ContextApi/Context";
 
-export default function ProjectCard({ project, deleteData }) {
+export default function ProjectCard({ project , setReload}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ ...project });
@@ -57,6 +57,20 @@ export default function ProjectCard({ project, deleteData }) {
             closeModal();
         }
     };
+
+    const deleteData = async (id) => {
+        try {
+            const response = await deleteProject(id);
+            if (response.status === 200) {
+                toast.success("Project deleted Successfully")
+                closeModal()
+                setReload(prev => !prev)
+            }
+        } catch (error) {
+            toast.error("failed to delete project")
+            console.error("BAckend Api Error", error)
+        }
+    }
 
     const handleUpdate = async (id, data) => {
         const { title, description, languages, githubrepository, livelink, image } = editedData
@@ -329,7 +343,6 @@ export default function ProjectCard({ project, deleteData }) {
                                             <button
                                                 onClick={() => {
                                                     deleteData(project._id)
-                                                    closeModal()
                                                 }}
                                                 className="flex items-center justify-center border border-red-600 text-red-400 hover:bg-red-800 px-6 py-3 font-medium rounded-md transition-colors"
                                             >

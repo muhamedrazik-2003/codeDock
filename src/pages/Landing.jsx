@@ -9,6 +9,7 @@ import { getAllProjects } from "../services/allApis"
 export default function Landing() {
   const [logState, setLogState] = useState(false);
   const [sampleProjects, setSampleProjects] = useState([])
+  const [isLoading,setIsLoading] = useState(true);
 
   useEffect(() => {
     getProjectData()
@@ -17,7 +18,7 @@ export default function Landing() {
     } else {
       setLogState(false);
     }
-  })
+  },[])
 
   const getProjectData = async () => {
     try {
@@ -26,8 +27,10 @@ export default function Landing() {
       if (response.status === 200) {
         setSampleProjects(response.data.slice(0, 3))
         console.log(sampleProjects)
+        setIsLoading(false)
       }
     } catch (error) {
+        setIsLoading(false)
       console.error(error)
     }
 
@@ -90,9 +93,15 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sampleProjects.map((project) => (
+            {
+              isLoading ? 
+              <h1 className="my-6  text-center col-span-3 text-xl ">Loading Projects...</h1>
+              : sampleProjects.length > 0
+              ? sampleProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
-            ))}
+            ))
+            : <h1 className="my-6  text-center col-span-3 text-xl">Currently No Projects Found!.</h1>
+            }
           </div>
 
           <div className="text-center mt-12">
