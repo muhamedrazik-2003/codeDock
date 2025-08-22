@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { dataRefreshContext } from "../ContextApi/Context";
 import { authContext } from "../ContextApi/Context";
 
-export default function ProjectCard({ project, setReload }) {
+export default function ProjectCard({ project }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ ...project });
@@ -68,7 +68,7 @@ export default function ProjectCard({ project, setReload }) {
             if (response.status === 200) {
                 toast.success("Project deleted Successfully")
                 closeModal()
-                setReload(prev => !prev)
+                setDataRefresh(prev => !prev)
             }
         } catch (error) {
             toast.error("failed to delete project")

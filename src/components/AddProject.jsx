@@ -11,7 +11,7 @@ export const AddProject = () => {
     })
     const [preview, setPreview] = useState("")
 
-    const {setDataRefresh} = useContext(dataRefreshContext);
+    const { setDataRefresh } = useContext(dataRefreshContext);
     useEffect(() => {
         if (projectData.image) {
             setPreview(URL.createObjectURL(projectData.image))
@@ -40,6 +40,7 @@ export const AddProject = () => {
         const response = await addProject(projectData)
         if (response.status === 200) {
             toast.success("Project Added Successfully")
+            closeModal()
             setProjectData({
                 title: "", description: "", languages: "", githubrepository: "", livelink: "", image: ""
             })
@@ -163,7 +164,6 @@ export const AddProject = () => {
                                 <button
                                     onClick={() => {
                                         handleSubmit()
-                                        closeModal()
                                     }}
                                     className="flex items-center justify-center border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-md transition"
                                 >

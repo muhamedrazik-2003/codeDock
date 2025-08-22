@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import ProjectCard from './ProjectCard'
-import { deleteProject, userProject } from '../services/allApis'
+import { userProject } from '../services/allApis'
 import { dataRefreshContext } from '../ContextApi/Context'
 
 
@@ -29,16 +29,16 @@ function ProjectList() {
         }
 
     }
-    const deleteData = async (id) => {
-        try {
-            const response = await deleteProject(id);
-            if (response.status === 200) {
-                getData()
-            }
-        } catch (error) {
-            console.error("BAckend Api Error", error)
-        }
-    }
+    // const deleteData = async (id) => {
+    //     try {
+    //         const response = await deleteProject(id);
+    //         if (response.status === 200) {
+    //             getData()
+    //         }
+    //     } catch (error) {
+    //         console.error("BAckend Api Error", error)
+    //     }
+    // }
     return (
         <section className="w-full">
             <h2 className="text-xl font-semibold text-white mb-4 px-4">Your Projects</h2>
@@ -51,7 +51,6 @@ function ProjectList() {
                             : <ProjectCard
                                 key={project._id}
                                 project={project}
-                                deleteData={deleteData}
                             />
 
 
